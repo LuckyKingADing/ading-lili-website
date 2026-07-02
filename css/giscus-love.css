@@ -97,6 +97,21 @@ main .gsc-loading-image {
   font-family: inherit;
 }
 
+.gsc-header,
+.gsc-reactions,
+.gsc-reactions-count,
+.gsc-reactions-menu,
+.gsc-reactions-popover,
+.gsc-social-reaction-summary,
+.gsc-comment-replies-count,
+.gsc-reply-box {
+  display: none !important;
+}
+
+.gsc-timeline {
+  margin-top: 16px;
+}
+
 .gsc-comment-box,
 .gsc-comment,
 .gsc-timeline,
@@ -112,13 +127,46 @@ main .gsc-loading-image {
 }
 
 .gsc-comment-box-tabs {
-  border-radius: 10px 10px 0 0;
-  background: #fff7f5;
+  display: none !important;
+}
+
+.gsc-comment-box-md-toolbar,
+.gsc-comment-box-markdown-hint,
+.gsc-comment-box-preview {
+  display: none !important;
+}
+
+.gsc-comment-box-main {
+  position: relative;
+}
+
+.gsc-comment-box-write {
+  display: block !important;
 }
 
 .gsc-comment-box-textarea {
+  min-height: 132px;
   color: #3b3131;
   background: #fffdfc;
+  border-color: #f1cdc9;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.gsc-comment-box-textarea::placeholder {
+  color: transparent;
+}
+
+.gsc-comment-box-main:has(.gsc-comment-box-textarea:placeholder-shown)::before {
+  content: "你想对 TA 说的话...";
+  position: absolute;
+  top: 18px;
+  left: 16px;
+  z-index: 1;
+  color: #9a8a87;
+  font-size: 15px;
+  pointer-events: none;
+  font-family: "Noto Sans SC", "Montserrat", sans-serif;
 }
 
 .gsc-comment-box-textarea:focus {
@@ -139,8 +187,20 @@ main .gsc-loading-image {
   background: #fff7f5;
 }
 
-.gsc-reactions-count {
-  color: #e55a4f;
+.gsc-comment-author a[href*="LuckyKingADing"] span {
+  font-size: 0;
+}
+
+.gsc-comment-author a[href*="LuckyKingADing"] span::after {
+  content: "Ading";
+  color: #3b3131;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.gsc-comment-author .color-box-border-info,
+.gsc-comment-author [class*="color-box-border-info"] {
+  display: none !important;
 }
 
 .gsc-social-reaction-summary-item {
@@ -151,6 +211,17 @@ main .gsc-loading-image {
 .gsc-upvote-button,
 .gsc-comment-reactions .btn {
   border-radius: 999px;
+}
+
+.gsc-comment-box-buttons button[type="submit"].btn-primary {
+  min-width: 76px;
+  font-size: 0 !important;
+}
+
+.gsc-comment-box-buttons button[type="submit"].btn-primary::after {
+  content: "留言";
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .btn,

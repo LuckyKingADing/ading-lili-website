@@ -1,0 +1,936 @@
+/* ============================================================
+   💕 Ading & Lili - 照片墙样式
+   ============================================================ */
+
+/* === 基础样式 === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-main: #f5f5f5;
+  --bg-card: #FFFFFF;
+  --primary: #ff6f61;
+  --primary-dark: #e55a4f;
+  --accent-blue: #A8D8EA;
+  --accent-peach: #F9D5C3;
+  --text-main: #333;
+  --text-light: #777;
+  --border: #e0e0e0;
+}
+
+body {
+  font-family: "Montserrat", "Noto Sans SC", sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+/* === 登录页面 === */
+#loginPage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #fce4e4 0%, #e8f0f8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 50px 40px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  max-width: 380px;
+  width: 90%;
+  animation: fadeInUp 0.8s ease;
+}
+
+.login-title {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.login-subtitle {
+  font-size: 16px;
+  color: var(--text-light);
+  margin-bottom: 30px;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.login-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.login-input-group input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.login-input-group input:focus {
+  border-color: var(--primary);
+}
+
+.login-input-group button {
+  padding: 12px 24px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.login-input-group button:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+.login-error {
+  color: var(--primary);
+  font-size: 14px;
+  margin-top: 15px;
+  display: none;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.login-error.show {
+  display: block;
+  animation: shake 0.5s ease;
+}
+
+/* === 导航栏 === */
+nav {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 100;
+  height: 60px;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px;
+  text-align: center;
+}
+
+nav h1 {
+  font-family: "Pacifico", cursive;
+  font-size: 28px;
+  color: var(--primary);
+  margin: 0;
+  line-height: 40px;
+}
+
+/* === 主内容 === */
+main {
+  margin-top: 80px;
+}
+
+
+/* 名字区域 */
+#nameSection {
+  text-align: center;
+  padding: 10px 0;
+}
+
+#nameSection h2 {
+  font-family: "Pacifico", cursive;
+  font-size: 40px;
+  color: var(--primary);
+}
+
+/* 恋爱天数 */
+#timerSection {
+  text-align: center;
+  padding: 10px 20px;
+}
+
+#timerSection p {
+  font-size: 18px;
+  margin-bottom: 5px;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+#timerSection h2 {
+  font-size: 42px;
+  color: var(--primary);
+}
+
+#timerSection h2 span {
+  font-size: 56px;
+  font-weight: 700;
+}
+
+/* === 音乐播放器 === */
+#bgm {
+  display: none;
+}
+
+#musicPlayer {
+  max-width: 420px;
+  margin: 0 auto 15px;
+  background: var(--bg-card);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.player-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  gap: 12px;
+}
+
+.player-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: var(--bg-card);
+  color: var(--primary);
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s, transform 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.player-btn:hover {
+  background: #fff0ef;
+  transform: scale(1.1);
+}
+
+/* 播放图标 — CSS 三角 */
+.player-btn.play-icon::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 9px 0 9px 15px;
+  border-color: transparent transparent transparent var(--primary);
+  margin-left: 3px;
+}
+
+/* 暂停图标 — CSS 双竖线 */
+.player-btn.play-icon.playing::after {
+  width: 4px;
+  height: 16px;
+  border: none;
+  border-left: 4px solid var(--primary);
+  border-right: 4px solid var(--primary);
+  margin-left: 0;
+}
+
+/* 心跳光环 */
+.player-btn.play-icon.playing::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  transform: translate(-50%, -50%);
+  animation: heartbeat 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes heartbeat {
+  0%   { width: 44px; height: 44px; opacity: 0.8; }
+  15%  { width: 56px; height: 56px; opacity: 0.3; }
+  30%  { width: 44px; height: 44px; opacity: 0.8; }
+  45%  { width: 52px; height: 52px; opacity: 0.4; }
+  60%  { width: 44px; height: 44px; opacity: 0.6; }
+  100% { width: 44px; height: 44px; opacity: 0.6; }
+}
+
+.now-playing {
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
+}
+
+#nowPlayingText {
+  display: block;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--text-main);
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+#nowPlayingText.marquee {
+  animation: marquee 8s linear infinite;
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(60%); }
+  100% { transform: translateX(-100%); }
+}
+
+.playlist-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  border-top: 1px solid var(--border);
+}
+
+.playlist-panel.open {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-left: 3px solid transparent;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.playlist-item:hover {
+  background: #fafafa;
+}
+
+.playlist-item.active {
+  border-left-color: var(--primary);
+  background: #fff0ef;
+}
+
+.playlist-item .song-name {
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.playlist-item .song-artist {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-left: auto;
+}
+
+/* === 今日情话（右上角纯文本）=== */
+#quoteSection {
+  position: fixed;
+  top: 80px;
+  right: 36px;
+  z-index: 50;
+  text-align: right;
+  pointer-events: none;
+}
+
+#quoteSection h3 {
+  display: none;
+}
+
+#dailyQuote {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  text-align: right;
+  animation: fadeInUp 1s forwards;
+  opacity: 0;
+}
+
+.quote-text {
+  font-size: 16px;
+  line-height: 2.2;
+  color: #5c4d4d;
+  margin-bottom: 6px;
+  font-family: "Ma Shan Zheng", "Noto Sans SC", cursive;
+  white-space: pre-line;
+}
+
+.quote-source {
+  font-size: 15px;
+  color: #5c4d4d;
+  font-family: "Ma Shan Zheng", "Noto Sans SC", cursive;
+}
+
+/* 重要日期 */
+#datesSection {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 30px 0;
+  padding: 0 20px;
+}
+
+.date-item {
+  background-color: var(--bg-card);
+  padding: 20px 25px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  min-width: 160px;
+  transition: transform 0.3s;
+  animation: fadeInUp 1s forwards;
+  opacity: 0;
+}
+
+.date-item:nth-child(1) { animation-delay: 0.2s; }
+.date-item:nth-child(2) { animation-delay: 0.4s; }
+.date-item:nth-child(3) { animation-delay: 0.6s; }
+
+.date-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.date-item p {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.date-item span {
+  font-size: 13px;
+  color: var(--text-light);
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+/* === 照片墙 === */
+#gallerySection {
+  padding: 20px;
+}
+
+#gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#gallery img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  margin: 10px;
+  border-radius: 10px;
+  opacity: 1;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  image-orientation: from-image;
+}
+
+#gallery img:hover {
+  transform: scale(1.08);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 30px;
+  color: var(--text-light);
+  font-size: 14px;
+  display: none;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.loading-indicator.show {
+  display: block;
+}
+
+/* === 图片弹窗 === */
+#popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.92);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#imgDate {
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  margin-top: 2.5%;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+#popupImg {
+  max-width: 85%;
+  max-height: 80%;
+  display: block;
+  border-radius: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  image-orientation: from-image;
+}
+
+#closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #fff;
+  font-size: 50px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: color 0.3s;
+}
+
+#closeBtn:hover {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 左右箭头 */
+.arrow {
+  display: none;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 60px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  z-index: 1001;
+  user-select: none;
+  padding: 0 15px;
+  transition: color 0.3s;
+}
+
+#leftArrow { left: 10px; }
+#rightArrow { right: 10px; }
+
+.arrow:hover { color: #fff; }
+.arrow.disabled { opacity: 0.3; pointer-events: none; }
+
+/* === 时间线 === */
+#timelineSection {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px 20px;
+}
+
+#timelineSection h3 {
+  text-align: center;
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 30px;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+#timeline {
+  position: relative;
+  padding: 0;
+}
+
+/* 中央竖线 */
+#timeline::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  position: relative;
+  width: 46%;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: fadeInUp 0.6s forwards;
+}
+
+.timeline-item:nth-child(odd) {
+  margin-right: 54%;
+  text-align: right;
+}
+
+.timeline-item:nth-child(even) {
+  margin-left: 54%;
+  text-align: left;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 16px;
+  width: 14px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 3px solid var(--bg-card);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.timeline-item:nth-child(odd) .timeline-dot {
+  right: calc(-8% - 7px);
+}
+
+.timeline-item:nth-child(even) .timeline-dot {
+  left: calc(-8% - 7px);
+}
+
+.timeline-card {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-date {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.timeline-title {
+  font-size: 16px;
+  color: var(--text-main);
+  margin-bottom: 4px;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.timeline-desc {
+  font-size: 13px;
+  color: var(--text-light);
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.timeline-item:nth-child(1) { animation-delay: 0.1s; }
+.timeline-item:nth-child(2) { animation-delay: 0.2s; }
+.timeline-item:nth-child(3) { animation-delay: 0.3s; }
+.timeline-item:nth-child(4) { animation-delay: 0.4s; }
+.timeline-item:nth-child(5) { animation-delay: 0.5s; }
+.timeline-item:nth-child(6) { animation-delay: 0.6s; }
+.timeline-item:nth-child(7) { animation-delay: 0.7s; }
+.timeline-item:nth-child(8) { animation-delay: 0.8s; }
+
+/* 移动端时间线 */
+@media (max-width: 768px) {
+  #timeline::before {
+    left: 20px;
+  }
+
+  .timeline-item,
+  .timeline-item:nth-child(odd),
+  .timeline-item:nth-child(even) {
+    width: calc(100% - 50px);
+    margin-left: 50px;
+    margin-right: 0;
+    text-align: left;
+  }
+
+  .timeline-item .timeline-dot,
+  .timeline-item:nth-child(odd) .timeline-dot,
+  .timeline-item:nth-child(even) .timeline-dot {
+    left: -36px;
+    right: auto;
+  }
+}
+
+/* === 留言区 === */
+#messageSection {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px 20px;
+}
+
+#messageSection h3 {
+  text-align: center;
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 25px;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+#messageForm {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
+
+.message-author-select {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.author-btn {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.3s;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.author-btn.active {
+  border-color: var(--primary);
+  background: #fff0ef;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+#messageInput {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+#messageInput:focus {
+  border-color: var(--primary);
+}
+
+#sendMessageBtn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+#sendMessageBtn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.02);
+}
+
+/* 留言卡片 */
+.message-card {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.5s ease;
+}
+
+.message-card.him {
+  border-left: 4px solid var(--primary);
+}
+
+.message-card.her {
+  border-left: 4px solid var(--accent-blue);
+}
+
+.message-card .msg-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.message-card .msg-author {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 14px;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.message-card .msg-time {
+  color: #bbb;
+  font-size: 12px;
+}
+
+.message-card .msg-content {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  font-family: "Noto Sans SC", sans-serif;
+  white-space: pre-wrap;
+}
+
+/* === 页脚 === */
+footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: #bbb;
+  font-size: 14px;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+
+/* === 爱心画布 === */
+#heartCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99;
+}
+
+/* === 背景旋转渐变 === */
+body::before {
+  content: "";
+  position: fixed;
+  top: -50px;
+  left: -50px;
+  width: 200%;
+  height: 200%;
+  background-image: radial-gradient(
+    circle at center,
+    rgba(255, 111, 97, 0.2),
+    transparent 70%
+  );
+  animation: rotateBackground 30s linear infinite;
+  z-index: -1;
+}
+
+/* === 动画 === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rotateBackground {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* === 响应式 === */
+@media (max-width: 768px) {
+  nav h1 {
+    font-size: 22px;
+  }
+
+  #nameSection h2 {
+    font-size: 30px;
+  }
+
+  #timerSection h2 {
+    font-size: 32px;
+  }
+
+  #timerSection h2 span {
+    font-size: 42px;
+  }
+
+  .date-item {
+    min-width: 130px;
+    padding: 15px 18px;
+  }
+
+  .date-item p {
+    font-size: 18px;
+  }
+
+  #gallery img {
+    width: 160px;
+    height: 160px;
+    margin: 8px;
+  }
+
+  .login-card {
+    padding: 35px 25px;
+  }
+
+  .login-input-group {
+    flex-direction: column;
+  }
+
+  .arrow {
+    font-size: 40px;
+  }
+
+  #closeBtn {
+    top: 15px;
+    right: 20px;
+    font-size: 40px;
+  }
+
+  #quoteSection {
+    position: static;
+    text-align: center;
+    pointer-events: auto;
+    max-width: 400px;
+    margin: 20px auto 0;
+    padding: 0 10px;
+  }
+
+  #dailyQuote {
+    padding: 18px 16px;
+  }
+
+  .quote-text {
+    font-size: 15px;
+  }
+
+  #messageSection {
+    margin: 20px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  #gallery img {
+    width: 150px;
+    height: 150px;
+    margin: 6px;
+  }
+
+  #musicPlayer {
+    max-width: 320px;
+  }
+}

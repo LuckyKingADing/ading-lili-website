@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light only">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Our Love Journey</title>
+  <link rel="stylesheet" href="css/style.css?v=31">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&family=Noto+Sans+SC:wght@400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 爱心轨迹画布 -->
+  <canvas id="heartCanvas"></canvas>
+
+  <!-- 登录页面 -->
+  <div id="loginPage">
+    <div class="login-card">
+      <h1 class="login-title">💕</h1>
+      <p class="login-subtitle">这是属于我们的秘密空间</p>
+      <div class="login-input-group">
+        <input type="password" id="passwordInput" placeholder="输入我们的暗号..." autocomplete="off">
+        <button id="loginBtn" onclick="handleLogin()">进入</button>
+      </div>
+      <p id="loginError" class="login-error">暗号不对哦～再想想</p>
+    </div>
+  </div>
+
+  <!-- 主页面 -->
+  <div id="mainPage" style="display: none;">
+    <!-- 导航栏 -->
+    <nav>
+      <div class="nav-container">
+        <h1 id="siteTitle">Our Love Journey</h1>
+      </div>
+    </nav>
+
+    <main>
+      <!-- 名字区域 -->
+      <section id="nameSection">
+        <h2 id="coupleNames"></h2>
+      </section>
+
+      <!-- 恋爱天数 -->
+      <section id="timerSection">
+        <audio id="bgm"></audio>
+        <div id="musicPlayer">
+          <div class="player-bar">
+            <button id="playBtn" class="player-btn play-icon" onclick="togglePlay()"></button>
+            <div class="now-playing">
+              <span id="nowPlayingText" class="marquee">选择一首歌吧</span>
+            </div>
+            <button id="playlistToggle" class="player-btn" onclick="togglePlaylist()">☰</button>
+          </div>
+          <div id="playlistPanel" class="playlist-panel"></div>
+        </div>
+        <p>我们已经相爱了</p>
+        <h2><span id="loveDays">0</span> 天</h2>
+      </section>
+
+      <!-- 今日情话（右上角纯文本） -->
+      <section id="quoteSection" style="display: none;">
+        <h3>今日情话 💕</h3>
+        <div id="dailyQuote">
+          <p id="quoteText" class="quote-text"></p>
+          <p id="quoteSource" class="quote-source"></p>
+        </div>
+      </section>
+
+      <!-- 重要日期 -->
+      <section id="datesSection"></section>
+
+      <!-- 照片墙 -->
+      <section id="gallerySection">
+        <div id="gallery"></div>
+        <div id="loadingIndicator" class="loading-indicator">
+          <span>加载中...</span>
+        </div>
+      </section>
+
+      <!-- 时间线 -->
+      <section id="timelineSection">
+        <h3>💕 我们的故事</h3>
+        <div id="timeline"></div>
+      </section>
+
+      <!-- 留言区 -->
+      <section id="messageSection">
+        <h3>💌 我们的小情书</h3>
+        <div id="messageForm">
+          <div class="message-author-select">
+            <button class="author-btn active" data-author="him" onclick="selectAuthor('him')">Ading</button>
+            <button class="author-btn" data-author="her" onclick="selectAuthor('her')">Lili</button>
+          </div>
+          <textarea id="messageInput" placeholder="写下想对彼此说的话..." rows="3"></textarea>
+          <button id="sendMessageBtn" onclick="sendMessage()">发送 💕</button>
+        </div>
+        <div id="messageList"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Made with 💕 by Ading & Lili</p>
+    </footer>
+  </div>
+
+  <!-- 图片弹窗 -->
+  <div id="popup">
+    <span id="closeBtn" onclick="closePopup()">&times;</span>
+    <p id="imgDate"></p>
+    <img id="popupImg" src="" alt="Photo">
+  </div>
+  <div id="leftArrow" class="arrow" onclick="showPreviousImage()">❮</div>
+  <div id="rightArrow" class="arrow" onclick="showNextImage()">❯</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
+  <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+  <script src="config.js?v=3"></script>
+  <script src="js/hearts.js?v=1"></script>
+  <script src="js/app.js?v=9"></script>
+</body>
+</html>

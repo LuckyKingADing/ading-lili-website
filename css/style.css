@@ -145,6 +145,7 @@ nav h1 {
 /* === 主内容 === */
 main {
   margin-top: 80px;
+  position: relative;
 }
 
 
@@ -337,10 +338,10 @@ main {
   margin-left: auto;
 }
 
-/* === 今日情话（右上角纯文本）=== */
+/* === 今日情话（页面右上角纯文本，随页面滚动）=== */
 #quoteSection {
-  position: fixed;
-  top: 80px;
+  position: absolute;
+  top: 0;
   right: 36px;
   z-index: 50;
   text-align: right;

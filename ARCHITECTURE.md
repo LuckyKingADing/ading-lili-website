@@ -9,7 +9,7 @@
 | 自动化 | GitHub Actions | push 到 `main` 后自动部署 |
 | 字体 | Google Fonts (Montserrat, Pacifico, Noto Sans SC, Ma Shan Zheng) | CDN 加载 |
 | EXIF | exif-js (CDN) | 读取本地照片拍摄时间 |
-| 留言 | giscus + GitHub Discussions | 永久保存共享留言 |
+| 留言 | giscus + GitHub Discussions | 永久保存共享留言，自定义主题 CSS |
 | 本地存储 | localStorage | 登录状态、情话轮播顺序 |
 
 ## 架构模式
@@ -91,7 +91,8 @@ renderTimeline()
 ading-lili-website/
 ├── index.html          # 唯一页面: 登录 + 主内容
 ├── config.js           # 全局配置: 名字/日期/密码/歌单/照片参数/情话/时间线
-├── css/style.css       # 全部样式: 登录/导航/照片墙/giscus 留言/播放器/弹窗/响应式
+├── css/style.css       # 全部样式: 登录/导航/照片墙/giscus 外框/播放器/弹窗/响应式
+├── css/giscus-love.css # giscus iframe 内部自定义主题
 ├── js/
 │   ├── app.js          # 主逻辑: 初始化/登录/照片/播放器
 │   └── hearts.js       # Canvas 爱心粒子动画

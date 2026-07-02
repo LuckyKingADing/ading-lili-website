@@ -68,6 +68,7 @@
 - 使用 giscus 嵌入 GitHub Discussions 评论
 - `data-repo` 指向网站仓库
 - `data-mapping="specific"`，固定到同一个留言板 Discussion
+- `data-theme` 指向 GitHub Pages 上的自定义 CSS 文件
 - 输入框在顶部，语言 `zh-CN`，浅色主题
 - 用户登录 GitHub 后可留言、编辑、删除
 - 留言在不同设备之间同步显示

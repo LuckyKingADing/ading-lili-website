@@ -20,9 +20,24 @@ GitHub repository
 
 ## 第一次发布
 
-1. 在 GitHub 创建仓库，例如 `ading-lili-website`。
+1. 准备 GitHub 仓库名，例如 `ading-lili-website`。
 
-2. 本地推送：
+2. 本地推送。
+
+   如果你已经安装并登录 GitHub CLI，脚本会自动创建仓库、推送代码并尝试启用 GitHub Pages：
+
+   ```bash
+   scripts/publish-github-pages.sh ading-lili-website public
+   ```
+
+   当前机器如果没有 `gh`，先安装并登录：
+
+   ```bash
+   brew install gh
+   gh auth login
+   ```
+
+   或者先在 GitHub 手动创建同名仓库，再手动推送：
 
    ```bash
    git remote add origin git@github.com:<your-user>/ading-lili-website.git
@@ -45,7 +60,7 @@ GitHub repository
 修改代码后提交并推送到 `main` 分支：
 
 ```bash
-git add index.html config.js css js images music README.md DEPLOYMENT.md .github/workflows/deploy-pages.yml .nojekyll
+git add index.html config.js css js images music README.md DEPLOYMENT.md .github/workflows/deploy-pages.yml .nojekyll scripts/publish-github-pages.sh
 git commit -m "Update website"
 git push
 ```

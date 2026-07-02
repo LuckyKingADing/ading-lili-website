@@ -9,7 +9,8 @@
 | 自动化 | GitHub Actions | push 到 `main` 后自动部署 |
 | 字体 | Google Fonts (Montserrat, Pacifico, Noto Sans SC, Ma Shan Zheng) | CDN 加载 |
 | EXIF | exif-js (CDN) | 读取本地照片拍摄时间 |
-| 本地存储 | localStorage | 登录状态、留言、情话轮播顺序 |
+| 留言 | giscus + GitHub Discussions | 永久保存共享留言 |
+| 本地存储 | localStorage | 登录状态、情话轮播顺序 |
 
 ## 架构模式
 
@@ -19,12 +20,13 @@ GitHub repository
   -> 自动预处理 dist/images 照片和缩略图
   -> GitHub Pages
   -> 浏览器加载静态 HTML/CSS/JS/图片/音乐
+  -> giscus 连接 GitHub Discussions 留言
 ```
 
-- **无后端**：没有数据库、云函数或服务端 API
+- **无自建后端**：没有自建数据库、云函数或服务端 API
 - **单页应用 (SPA)**：登录页和主页面通过 `display` 切换，无路由
 - **静态内容**：照片、音乐、时间线、情话都随仓库一起发布
-- **本机留言**：留言仅保存在当前浏览器的 localStorage
+- **永久留言**：留言保存在 GitHub Discussions，登录 GitHub 后可写入和管理
 
 ## 数据流
 
@@ -48,8 +50,11 @@ showMainPage()
 ### 留言
 
 ```
-发送留言 -> 写入 localStorage
-读取留言 -> 从 localStorage 读取并渲染
+giscus iframe 加载
+  -> 按 data-term 找到或创建 GitHub Discussion
+  -> GitHub 登录后发表评论
+  -> GitHub Discussions 持久保存
+  -> giscus 渲染评论和后续编辑
 ```
 
 ### 歌单
@@ -86,9 +91,9 @@ renderTimeline()
 ading-lili-website/
 ├── index.html          # 唯一页面: 登录 + 主内容
 ├── config.js           # 全局配置: 名字/日期/密码/歌单/照片参数/情话/时间线
-├── css/style.css       # 全部样式: 登录/导航/照片墙/留言/播放器/弹窗/响应式
+├── css/style.css       # 全部样式: 登录/导航/照片墙/giscus 留言/播放器/弹窗/响应式
 ├── js/
-│   ├── app.js          # 主逻辑: 初始化/登录/照片/留言/播放器
+│   ├── app.js          # 主逻辑: 初始化/登录/照片/播放器
 │   └── hearts.js       # Canvas 爱心粒子动画
 ├── scripts/
 │   ├── preprocess.py   # 照片预处理脚本，发布时对 dist/images 自动运行

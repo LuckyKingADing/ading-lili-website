@@ -4,7 +4,7 @@
 
 ---
 
-请帮我创建一个情侣纪念网站 "Our Love Journey"，源码托管在 GitHub，静态页面通过 GitHub Pages 发布。不要使用任何后端、数据库、云函数或对象存储。
+请帮我创建一个情侣纪念网站 "Our Love Journey"，源码托管在 GitHub，静态页面通过 GitHub Pages 发布。不要使用自建后端、云函数或对象存储。永久留言使用 giscus + GitHub Discussions。
 
 ## 技术栈
 
@@ -12,7 +12,8 @@
 - 部署: GitHub Pages + GitHub Actions
 - 发布流程自动运行照片预处理脚本，生成编号照片和缩略图
 - CDN 加载: Google Fonts、exif-js
-- 本地存储: localStorage 保存登录状态、留言、情话轮播顺序
+- 留言: giscus + GitHub Discussions
+- 本地存储: localStorage 保存登录状态、情话轮播顺序
 
 ## 配色方案
 
@@ -64,10 +65,12 @@
 
 ### 6. 留言板
 
-- 双人身份切换按钮
-- 留言写入 localStorage
-- 留言卡片带作者、时间、内容
-- 明确接受：不同设备之间不会同步留言
+- 使用 giscus 嵌入 GitHub Discussions 评论
+- `data-repo` 指向网站仓库
+- `data-mapping="specific"`，固定到同一个留言板 Discussion
+- 输入框在顶部，语言 `zh-CN`，浅色主题
+- 用户登录 GitHub 后可留言、编辑、删除
+- 留言在不同设备之间同步显示
 
 ### 7. 今日情话
 

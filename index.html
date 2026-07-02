@@ -89,15 +89,24 @@
       <!-- 留言区 -->
       <section id="messageSection">
         <h3>💌 我们的小情书</h3>
-        <div id="messageForm">
-          <div class="message-author-select">
-            <button class="author-btn active" data-author="him" onclick="selectAuthor('him')">Ading</button>
-            <button class="author-btn" data-author="her" onclick="selectAuthor('her')">Lili</button>
-          </div>
-          <textarea id="messageInput" placeholder="写下想对彼此说的话..." rows="3"></textarea>
-          <button id="sendMessageBtn" onclick="sendMessage()">发送 💕</button>
+        <div id="messageBoard">
+          <script src="https://giscus.app/client.js"
+            data-repo="LuckyKingADing/ading-lili-website"
+            data-repo-id="R_kgDOTL4eBQ"
+            data-category="General"
+            data-category-id="DIC_kwDOTL4eBc4DAYWF"
+            data-mapping="specific"
+            data-term="Our Love Journey Guestbook"
+            data-strict="1"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="light"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+          </script>
         </div>
-        <div id="messageList"></div>
       </section>
     </main>
 
@@ -118,6 +127,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
   <script src="config.js?v=4"></script>
   <script src="js/hearts.js?v=1"></script>
-  <script src="js/app.js?v=10"></script>
+  <script src="js/app.js?v=11"></script>
 </body>
 </html>

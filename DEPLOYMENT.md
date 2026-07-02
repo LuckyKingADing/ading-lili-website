@@ -10,7 +10,7 @@ GitHub repository
   -> GitHub Pages
 ```
 
-没有服务器、数据库、云函数或对象存储。网页加载的 HTML、CSS、JS、照片和音乐都来自 GitHub Pages。
+没有自建服务器、云函数或对象存储。网页加载的 HTML、CSS、JS、照片和音乐都来自 GitHub Pages；永久留言通过 giscus 写入 GitHub Discussions。
 
 ## 仓库和线上地址
 
@@ -79,12 +79,14 @@ scripts/publish-github-pages.sh ading-lili-website public
 - 修改样式：编辑 `css/style.css`
 - 添加照片：放入 `images/`，提交并推送；发布时自动生成缩略图
 - 添加音乐：放入 `music/`，更新 `config.js` 的 `playlist`，提交并推送
+- 管理留言：在网站中用 GitHub 登录后留言；或到 GitHub 仓库的 Discussions 中编辑、删除、管理
 
 ## 限制
 
 GitHub Pages 是静态托管：
 
 - 不能安全地从网页直接写 GitHub 仓库
-- 留言只能保存在当前浏览器的 localStorage
-- 共享留言、后台上传、访问统计等功能需要额外后端
+- 永久留言依赖 GitHub Discussions 和 giscus GitHub App
+- 留言者需要 GitHub 账号
+- 更私密的留言权限控制、后台上传、访问统计等功能需要额外后端
 - 仓库内单个文件不要超过 100MB

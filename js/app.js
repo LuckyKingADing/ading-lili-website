@@ -7,7 +7,6 @@ let photoIndex = 0;
 let isLoading = false;
 let currentImageIndex = 0;
 let loadedImages = [];
-let currentAuthor = "him";
 let allPhotosLoaded = false;
 let currentSongIndex = 0; // 当前播放歌曲索引
 let isPlaylistOpen = false;
@@ -28,11 +27,6 @@ function initSite() {
 
   // 初始化歌单
   initPlaylist();
-
-  // 设置作者按钮文字
-  const authorBtns = document.querySelectorAll(".author-btn");
-  authorBtns[0].textContent = CONFIG.names.him;
-  authorBtns[1].textContent = CONFIG.names.her;
 
   // 渲染日期卡片
   renderDateCards();
@@ -180,8 +174,6 @@ function showMainPage() {
   loadPhotos();
   window.addEventListener("scroll", handleScroll);
 
-  // 加载留言
-  loadMessages();
 }
 
 function loadPhotos() {
@@ -443,75 +435,3 @@ window.addEventListener("keydown", (e) => {
     else if (e.key === "Escape") closePopup();
   }
 });
-
-// --- 留言系统 ---
-function selectAuthor(author) {
-  currentAuthor = author;
-  document.querySelectorAll(".author-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.author === author);
-  });
-}
-
-function sendMessage() {
-  const input = document.getElementById("messageInput");
-  const text = input.value.trim();
-  if (!text) return;
-
-  const message = {
-    author: currentAuthor,
-    authorName: currentAuthor === "him" ? CONFIG.names.him : CONFIG.names.her,
-    content: text,
-    timestamp: Date.now(),
-  };
-
-  input.value = "";
-
-  saveToLocal(message);
-  renderMessages(getStoredMessages());
-}
-
-function saveToLocal(message) {
-  const messages = getStoredMessages();
-  messages.unshift(message);
-  localStorage.setItem("ading_lili_messages", JSON.stringify(messages));
-}
-
-function getStoredMessages() {
-  try {
-    return JSON.parse(localStorage.getItem("ading_lili_messages") || "[]");
-  } catch {
-    return [];
-  }
-}
-
-function loadMessages() {
-  renderMessages(getStoredMessages());
-}
-
-function renderMessages(messages) {
-  const list = document.getElementById("messageList");
-  list.innerHTML = "";
-
-  messages.forEach((msg) => {
-    const card = document.createElement("div");
-    card.className = `message-card ${msg.author}`;
-
-    const time = new Date(msg.timestamp);
-    const timeStr = `${time.getFullYear()}.${String(time.getMonth() + 1).padStart(2, "0")}.${String(time.getDate()).padStart(2, "0")} ${String(time.getHours()).padStart(2, "0")}:${String(time.getMinutes()).padStart(2, "0")}`;
-
-    card.innerHTML = `
-      <div class="msg-header">
-        <span class="msg-author">${msg.authorName}</span>
-        <span class="msg-time">${timeStr}</span>
-      </div>
-      <div class="msg-content">${escapeHtml(msg.content)}</div>
-    `;
-    list.appendChild(card);
-  });
-}
-
-function escapeHtml(text) {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
-}

@@ -10,6 +10,7 @@
 
 - 纯静态 HTML5 + CSS3 + Vanilla JS (ES6)，不使用前端框架
 - 部署: GitHub Pages + GitHub Actions
+- 发布流程自动运行照片预处理脚本，生成编号照片和缩略图
 - CDN 加载: Google Fonts、exif-js
 - 本地存储: localStorage 保存登录状态、留言、情话轮播顺序
 
@@ -54,7 +55,8 @@
 
 ### 5. 照片墙
 
-- 从仓库内 `images/thumbs/0.jpg` ~ N.jpg 顺序加载缩略图
+- GitHub Actions 发布时对 `dist/images` 自动生成 `images/thumbs/0.jpg` ~ N.jpg
+- 前端从 `images/thumbs/0.jpg` ~ N.jpg 顺序加载缩略图
 - 缩略图不存在时 fallback 到 `images/0.jpg` ~ N.jpg
 - EXIF 提取拍摄日期
 - 图片弹窗浏览，左右箭头 + 键盘方向键切换，ESC 关闭
@@ -107,7 +109,7 @@ project/
 │   └── thumbs/
 ├── music/
 ├── scripts/
-│   ├── preprocess.py
+│   ├── preprocess.py   # 支持 --images-dir，发布时自动运行
 │   └── publish-github-pages.sh
 ├── .github/workflows/deploy-pages.yml
 ├── README.md

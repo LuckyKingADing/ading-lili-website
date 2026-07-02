@@ -16,6 +16,7 @@
 ```
 GitHub repository
   -> GitHub Actions
+  -> 自动预处理 dist/images 照片和缩略图
   -> GitHub Pages
   -> 浏览器加载静态 HTML/CSS/JS/图片/音乐
 ```
@@ -38,7 +39,7 @@ GitHub repository
 ```
 showMainPage()
   -> loadImages()
-  -> 顺序尝试 images/thumbs/0.jpg ~ N.jpg
+  -> 顺序尝试发布产物里的 images/thumbs/0.jpg ~ N.jpg
   -> 缩略图缺失时尝试 images/0.jpg ~ N.jpg
   -> EXIF 提取拍摄日期
   -> 渲染照片墙
@@ -90,7 +91,7 @@ ading-lili-website/
 │   ├── app.js          # 主逻辑: 初始化/登录/照片/留言/播放器
 │   └── hearts.js       # Canvas 爱心粒子动画
 ├── scripts/
-│   ├── preprocess.py   # 照片预处理脚本
+│   ├── preprocess.py   # 照片预处理脚本，发布时对 dist/images 自动运行
 │   └── publish-github-pages.sh
 ├── images/             # 原图和缩略图
 ├── music/              # 歌单音频文件
@@ -115,6 +116,7 @@ ading-lili-website/
   -> git commit
   -> git push origin main
   -> GitHub Actions 打包静态文件
+  -> 自动生成照片编号和缩略图
   -> GitHub Pages 发布
 ```
 

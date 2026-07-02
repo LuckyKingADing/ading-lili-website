@@ -36,6 +36,14 @@ https://LuckyKingADing.github.io/ading-lili-website/
 
 每次 push 到 `main` 分支后，GitHub Actions 会自动部署。
 
+部署时会自动执行：
+
+```bash
+python scripts/preprocess.py --images-dir dist/images
+```
+
+所以添加照片后不需要本地手动生成缩略图；直接提交照片并推送即可。
+
 ## 日常发布流程
 
 ```bash
@@ -69,7 +77,7 @@ scripts/publish-github-pages.sh ading-lili-website public
 - 修改文字、日期、歌单、情话、时间线：编辑 `config.js`
 - 修改页面结构：编辑 `index.html`
 - 修改样式：编辑 `css/style.css`
-- 添加照片：放入 `images/`，运行 `python3 scripts/preprocess.py`，提交并推送
+- 添加照片：放入 `images/`，提交并推送；发布时自动生成缩略图
 - 添加音乐：放入 `music/`，更新 `config.js` 的 `playlist`，提交并推送
 
 ## 限制

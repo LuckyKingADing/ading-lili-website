@@ -2,10 +2,12 @@
 
 支持格式: JPG, JPEG, PNG, WebP, HEIC, BMP, GIF
 
-放好照片后运行:
+发布时 GitHub Actions 会自动运行照片预处理，不需要你手动生成缩略图。
+
+如果需要本地预览新照片，可以手动运行:
+
 ```bash
-cd scripts
-python3 preprocess.py
+python3 scripts/preprocess.py
 ```
 
 脚本会自动:

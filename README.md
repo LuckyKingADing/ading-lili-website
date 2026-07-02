@@ -30,7 +30,7 @@
 │   └── thumbs/         # 缩略图（预处理脚本自动生成）
 ├── music/              # 音乐文件
 ├── scripts/
-│   ├── preprocess.py   # 照片预处理脚本
+│   ├── preprocess.py   # 照片预处理脚本（发布时自动运行）
 │   └── publish-github-pages.sh
 ├── .github/workflows/  # GitHub Pages 自动部署
 ├── DEPLOYMENT.md       # 发布说明
@@ -60,21 +60,21 @@
 照片完全走 GitHub 仓库。
 
 1. 将照片放入 `images/`。
-2. 运行预处理脚本：
-
-   ```bash
-   cd /Users/ading/Code_Projects/Projects_for_VibeCoding/ading-lili-website
-   python3 scripts/preprocess.py
-   ```
-
-3. 脚本会按拍摄时间排序，重命名为 `0.jpg`, `1.jpg`, `2.jpg`，并生成 `images/thumbs/`。
-4. 提交并推送：
+2. 提交并推送：
 
    ```bash
    git add images
    git commit -m "Update photos"
    git push
    ```
+
+3. GitHub Actions 发布时会自动运行照片预处理：按拍摄时间排序，转换为 `0.jpg`, `1.jpg`, `2.jpg`，并生成 `images/thumbs/`。
+
+本地预览时，如果想马上看到新照片，可以手动运行：
+
+```bash
+python3 scripts/preprocess.py
+```
 
 ## 音乐管理
 

@@ -25,11 +25,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install image tools
+        run: python -m pip install Pillow pillow-heif
+
       - name: Prepare static site
         run: |
           mkdir -p dist
           cp index.html config.js dist/
           cp -R css js images music dist/
+          python scripts/preprocess.py --images-dir dist/images
           touch dist/.nojekyll
 
       - name: Setup Pages

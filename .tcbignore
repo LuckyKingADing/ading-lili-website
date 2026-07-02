@@ -1,9 +1,0 @@
-.claude/
-.gitignore
-cloudbaserc.json
-scripts/
-cloudfunctions/
-music/README.md
-images/README.md
-.DS_Store
-*.py

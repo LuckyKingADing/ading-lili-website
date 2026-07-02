@@ -9,11 +9,6 @@ let currentImageIndex = 0;
 let loadedImages = [];
 let currentAuthor = "him";
 let allPhotosLoaded = false;
-let db = null; // CloudBase 数据库实例，null 表示 fallback 到 localStorage
-let app = null; // CloudBase 应用实例
-let dbReady = null; // CloudBase 初始化 promise
-let useCloudPhotos = false; // 是否使用云存储照片
-let cloudPhotoList = []; // 云存储照片列表 [{url, thumbUrl, date}, ...]
 let currentSongIndex = 0; // 当前播放歌曲索引
 let isPlaylistOpen = false;
 
@@ -39,13 +34,10 @@ function initSite() {
   authorBtns[0].textContent = CONFIG.names.him;
   authorBtns[1].textContent = CONFIG.names.her;
 
-  // 初始化 CloudBase（异步，情话/照片/留言等模块会 await）
-  dbReady = initCloudBase();
-
   // 渲染日期卡片
   renderDateCards();
 
-  // 渲染今日情话（await dbReady → 优先走 CloudBase）
+  // 渲染今日情话
   renderDailyQuote();
 
   // 渲染时间线
@@ -53,22 +45,6 @@ function initSite() {
 
   // 计算恋爱天数
   calculateLoveDays();
-}
-
-async function initCloudBase() {
-  if (!CONFIG.cloudbase.env || typeof cloudbase === "undefined") return;
-  try {
-    app = cloudbase.init({
-      env: CONFIG.cloudbase.env,
-      region: CONFIG.cloudbase.region,
-    });
-    const auth = app.auth({ persistence: "local" });
-    await auth.anonymousAuthProvider().signIn();
-    db = app.database();
-  } catch (e) {
-    console.warn("CloudBase 初始化失败，使用 localStorage:", e);
-    db = null;
-  }
 }
 
 // --- 歌单播放器 ---
@@ -200,92 +176,21 @@ function showMainPage() {
   document.getElementById("loginPage").style.display = "none";
   document.getElementById("mainPage").style.display = "block";
 
-  // 加载照片: 优先云存储，fallback 本地文件
-  loadPhotos().then(() => {
-    if (!useCloudPhotos) {
-      window.addEventListener("scroll", handleScroll);
-    }
-  });
+  // 加载本地照片
+  loadPhotos();
+  window.addEventListener("scroll", handleScroll);
 
   // 加载留言
   loadMessages();
 }
 
-async function loadPhotos() {
-  if (dbReady) await dbReady;
-  if (CONFIG.photos.useCloudStorage && db) {
-    const cloudPhotos = await loadPhotosFromCloud();
-    if (cloudPhotos && cloudPhotos.length > 0) {
-      useCloudPhotos = true;
-      cloudPhotoList = cloudPhotos;
-      renderCloudPhotos(cloudPhotos);
-      return;
-    }
-  }
-  // fallback 到本地文件加载
-  useCloudPhotos = false;
+function loadPhotos() {
   loadImages(CONFIG.photos.initialBatches);
 }
 
-async function loadPhotosFromCloud() {
-  try {
-    const res = await db
-      .collection("photos")
-      .orderBy("uploadTime", "desc")
-      .limit(500)
-      .get();
-    if (res.data && res.data.length > 0) {
-      return res.data;
-    }
-  } catch (e) {
-    console.warn("云存储照片列表获取失败，使用本地文件:", e);
-  }
-  return null;
-}
-
-function renderCloudPhotos(photos) {
-  const gallery = document.getElementById("gallery");
-  const indicator = document.getElementById("loadingIndicator");
-
-  photos.forEach((photo, idx) => {
-    const el = document.createElement("img");
-    const thumbUrl = photo.thumbUrl || (photo.url + "?imageMogr2/thumbnail/400x400");
-    el.src = thumbUrl;
-    el.dataset.large = photo.url;
-    el.dataset.index = idx;
-    el.alt = `Photo ${idx}`;
-    el.setAttribute("data-date", photo.date || "");
-
-    loadedImages[idx] = { src: photo.url, date: photo.date || "" };
-
-    el.addEventListener("click", () => {
-      showPopup(photo.url, photo.date || "", idx);
-    });
-
-    gallery.appendChild(el);
-  });
-
-  allPhotosLoaded = true;
-  indicator.innerHTML = "<span>已经到底啦 💕</span>";
-  indicator.classList.add("show");
-}
-
 // --- 今日情话 ---
-async function renderDailyQuote() {
-  let quotes = CONFIG.dailyQuotes || [];
-
-  // 优先从云端加载
-  if (dbReady) await dbReady;
-  if (db) {
-    try {
-      const res = await db.collection("dailyQuotes").get();
-      if (res.data && res.data.length > 0) {
-        quotes = res.data.map((q) => ({ text: q.text, source: q.source || "" }));
-      }
-    } catch (e) {
-      console.warn("云端情话加载失败，使用本地:", e);
-    }
-  }
+function renderDailyQuote() {
+  const quotes = CONFIG.dailyQuotes || [];
 
   if (!quotes || quotes.length === 0) return;
 
@@ -324,21 +229,8 @@ async function renderDailyQuote() {
 }
 
 // --- 时间线 ---
-async function renderTimeline() {
-  let events = CONFIG.timeline || [];
-
-  // 优先从云端加载
-  if (dbReady) await dbReady;
-  if (db) {
-    try {
-      const res = await db.collection("timeline").orderBy("order", "asc").get();
-      if (res.data && res.data.length > 0) {
-        events = res.data.map((e) => ({ date: e.date, title: e.title, desc: e.desc }));
-      }
-    } catch (e) {
-      console.warn("云端时间线加载失败，使用本地:", e);
-    }
-  }
+function renderTimeline() {
+  const events = CONFIG.timeline || [];
 
   if (!events || events.length === 0) return;
   const container = document.getElementById("timeline");
@@ -560,7 +452,7 @@ function selectAuthor(author) {
   });
 }
 
-async function sendMessage() {
+function sendMessage() {
   const input = document.getElementById("messageInput");
   const text = input.value.trim();
   if (!text) return;
@@ -574,35 +466,14 @@ async function sendMessage() {
 
   input.value = "";
 
-  if (db) {
-    try {
-      await db.collection("messages").add(message);
-      const messages = await loadMessagesFromCloud();
-      renderMessages(messages);
-    } catch (e) {
-      console.warn("云数据库写入失败，fallback localStorage:", e);
-      saveToLocal(message);
-      renderMessages(getStoredMessages());
-    }
-  } else {
-    saveToLocal(message);
-    renderMessages(getStoredMessages());
-  }
+  saveToLocal(message);
+  renderMessages(getStoredMessages());
 }
 
 function saveToLocal(message) {
   const messages = getStoredMessages();
   messages.unshift(message);
   localStorage.setItem("ading_lili_messages", JSON.stringify(messages));
-}
-
-async function loadMessagesFromCloud() {
-  const res = await db
-    .collection("messages")
-    .orderBy("timestamp", "desc")
-    .limit(100)
-    .get();
-  return res.data;
 }
 
 function getStoredMessages() {
@@ -613,16 +484,7 @@ function getStoredMessages() {
   }
 }
 
-async function loadMessages() {
-  if (db) {
-    try {
-      const messages = await loadMessagesFromCloud();
-      renderMessages(messages);
-      return;
-    } catch (e) {
-      console.warn("云数据库读取失败，fallback localStorage:", e);
-    }
-  }
+function loadMessages() {
   renderMessages(getStoredMessages());
 }
 

@@ -1,82 +1,82 @@
 # Deployment
 
-这个项目现在推荐用 GitHub 管理源码，并用 GitHub Pages 发布静态网页。
+这个项目现在完全通过 GitHub 管理源码，并通过 GitHub Pages 发布静态网页。
 
-## 当前推荐架构
+## 当前架构
 
 ```
 GitHub repository
   -> GitHub Actions
-  -> GitHub Pages 静态网页
-  -> 浏览器继续连接 CloudBase 数据库和云存储
+  -> GitHub Pages
 ```
 
-这样做之后，网页发布不再依赖 `tcb app deploy`。CloudBase 仍然只负责动态数据：
+没有服务器、数据库、云函数或对象存储。网页加载的 HTML、CSS、JS、照片和音乐都来自 GitHub Pages。
 
-- 照片列表和照片云存储
-- 留言板
-- 云端情话
-- 云端时间线
+## 仓库和线上地址
 
-## 第一次发布
+Repository:
 
-1. 准备 GitHub 仓库名，例如 `ading-lili-website`。
+```text
+https://github.com/LuckyKingADing/ading-lili-website
+```
 
-2. 本地推送。
+Pages:
 
-   如果你已经安装并登录 GitHub CLI，脚本会自动创建仓库、推送代码并尝试启用 GitHub Pages：
+```text
+https://LuckyKingADing.github.io/ading-lili-website/
+```
 
-   ```bash
-   scripts/publish-github-pages.sh ading-lili-website public
-   ```
+## 自动发布
 
-   当前机器如果没有 `gh`，先安装并登录：
+项目内置 GitHub Actions 工作流：
 
-   ```bash
-   brew install gh
-   gh auth login
-   ```
+```text
+.github/workflows/deploy-pages.yml
+```
 
-   或者先在 GitHub 手动创建同名仓库，再手动推送：
+每次 push 到 `main` 分支后，GitHub Actions 会自动部署。
 
-   ```bash
-   git remote add origin git@github.com:<your-user>/ading-lili-website.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-3. 打开 GitHub 仓库：
-
-   `Settings -> Pages -> Build and deployment -> Source -> GitHub Actions`
-
-4. Actions 跑完后，网页地址通常是：
-
-   ```text
-   https://<your-user>.github.io/ading-lili-website/
-   ```
-
-## 后续更新
-
-修改代码后提交并推送到 `main` 分支：
+## 日常发布流程
 
 ```bash
-git add index.html config.js css js images music README.md DEPLOYMENT.md .github/workflows/deploy-pages.yml .nojekyll scripts/publish-github-pages.sh
+cd /Users/ading/Code_Projects/Projects_for_VibeCoding/ading-lili-website
+
+git add .
 git commit -m "Update website"
 git push
 ```
 
-GitHub Actions 会自动重新发布。
+几秒到几十秒后，GitHub Pages 会刷新。
 
-## 隐私提醒
+## 第一次发布或重新绑定远程
 
-GitHub Pages 页面默认是公开网页。`config.js`、前端密码、公开照片和音乐都不应被当作真正保密内容。
-
-如果只想让 Lili 能访问，可以继续保留当前页面暗号作为轻量入口；如果需要真正权限控制，应使用带登录鉴权的托管方案，而不是纯静态 GitHub Pages。
-
-## 旧 CloudBase 发布方式
-
-旧方式仍可作为备用：
+当前仓库已经绑定远程。如果以后换电脑或重新配置，可以使用：
 
 ```bash
-tcb app deploy -f --framework static --install-command "" --build-command "" --output-dir "./" --env-id ading-d1g2dcqrs47be3e97
+git remote add origin https://github.com/LuckyKingADing/ading-lili-website.git
+git branch -M main
+git push -u origin main
 ```
+
+或者使用脚本：
+
+```bash
+scripts/publish-github-pages.sh ading-lili-website public
+```
+
+## 内容管理
+
+- 修改文字、日期、歌单、情话、时间线：编辑 `config.js`
+- 修改页面结构：编辑 `index.html`
+- 修改样式：编辑 `css/style.css`
+- 添加照片：放入 `images/`，运行 `python3 scripts/preprocess.py`，提交并推送
+- 添加音乐：放入 `music/`，更新 `config.js` 的 `playlist`，提交并推送
+
+## 限制
+
+GitHub Pages 是静态托管：
+
+- 不能安全地从网页直接写 GitHub 仓库
+- 留言只能保存在当前浏览器的 localStorage
+- 共享留言、后台上传、访问统计等功能需要额外后端
+- 仓库内单个文件不要超过 100MB

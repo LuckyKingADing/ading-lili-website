@@ -45,13 +45,10 @@ const CONFIG = {
     { name: "Everglow", artist: "Coldplay", file: "music/Coldplay - Everglow.flac" },
     { name: "不属于地球上的", artist: "江楠江楠", file: "music/不属于地球上的-江楠江楠.flac" },
     { name: "溯 (Reverse)", artist: "CORSAK胡梦周,马吟吟", file: "music/溯 (Reverse)-CORSAK胡梦周,马吟吟.flac" },
-    { name: "烂在鲜花阳光的地方", artist: "快乐老家", file: "https://6164-ading-d1g2dcqrs47be3e97-1353717227.tcb.qcloud.la/ading-lili/music/%E7%83%82%E5%9C%A8%E9%B2%9C%E8%8A%B1%E9%98%B3%E5%85%89%E7%9A%84%E5%9C%B0%E6%96%B9-%E5%BF%AB%E4%B9%90%E8%80%81%E5%AE%B6.mp3" },
   ],
 
   // 照片设置
   photos: {
-    useCloudStorage: true,    // 云存储模式已启用，照片从 CloudBase 数据库加载
-    cloudPath: "ading-lili/photos", // 云存储中照片文件夹路径
     batchSize: 10,           // 每批加载数量
     initialBatches: 5,       // 首次加载批数
     scrollDistance: 1000,    // 距底部多少像素时加载更多
@@ -77,9 +74,4 @@ const CONFIG = {
     { text: "我喜欢你\n不光是因为你的样子\n还因为和你在一起时\n我的样子。", source: "罗伊·克里夫特" },
   ],
 
-  // 腾讯云 CloudBase 配置
-  cloudbase: {
-    env: "ading-d1g2dcqrs47be3e97",
-    region: "ap-shanghai",
-  },
 };

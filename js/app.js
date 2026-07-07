@@ -11,6 +11,11 @@ let allPhotosLoaded = false;
 let currentSongIndex = 0; // 当前播放歌曲索引
 let isPlaylistOpen = false;
 
+const COVER_PHOTO_COUNT = 3;
+const COVER_REFRESH_INTERVAL = 5;
+const COVER_INDICES_KEY = "ading_lili_cover_indices";
+const COVER_REFRESH_COUNT_KEY = "ading_lili_cover_refresh_count";
+
 // --- 初始化 ---
 window.onload = function () {
   initSite();
@@ -183,10 +188,150 @@ function showMainPage() {
   document.getElementById("loginPage").style.display = "none";
   document.getElementById("mainPage").style.display = "block";
 
+  updateCoverPhotos();
+
   // 加载本地照片
   loadPhotos();
   window.addEventListener("scroll", handleScroll);
 
+}
+
+async function updateCoverPhotos() {
+  const coverImages = Array.from(document.querySelectorAll(".cover-photo"));
+  if (coverImages.length === 0) return;
+
+  const savedIndices = readStoredCoverIndices();
+  const refreshCount = Number(localStorage.getItem(COVER_REFRESH_COUNT_KEY) || "0") + 1;
+  let nextIndices = savedIndices;
+
+  if (!nextIndices || refreshCount >= COVER_REFRESH_INTERVAL) {
+    const photoCount = await findAvailablePhotoCount();
+    nextIndices = pickRandomPhotoIndices(photoCount, COVER_PHOTO_COUNT, savedIndices);
+    localStorage.setItem(COVER_REFRESH_COUNT_KEY, "0");
+    localStorage.setItem(COVER_INDICES_KEY, JSON.stringify(nextIndices));
+  } else {
+    localStorage.setItem(COVER_REFRESH_COUNT_KEY, String(refreshCount));
+  }
+
+  applyCoverPhotoIndices(coverImages, nextIndices);
+}
+
+function readStoredCoverIndices() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(COVER_INDICES_KEY) || "null");
+    if (
+      Array.isArray(parsed) &&
+      parsed.length === COVER_PHOTO_COUNT &&
+      parsed.every((idx) => Number.isInteger(idx) && idx >= 0)
+    ) {
+      return parsed;
+    }
+  } catch (e) {
+    // 忽略损坏的本地缓存，下面会重新随机生成。
+  }
+  return null;
+}
+
+async function findAvailablePhotoCount() {
+  const batchSize = CONFIG.photos.batchSize || 10;
+  const maxProbeCount = 300;
+
+  for (let start = 0; start < maxProbeCount; start += batchSize) {
+    const checks = await Promise.all(
+      Array.from({ length: batchSize }, (_, offset) => imageExists(`${CONFIG.photos.thumbFolder}/${start + offset}.jpg`))
+    );
+    const firstMissing = checks.indexOf(false);
+    if (firstMissing !== -1) return start + firstMissing;
+  }
+
+  return maxProbeCount;
+}
+
+function imageExists(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+
+function pickRandomPhotoIndices(photoCount, neededCount, previousIndices) {
+  const count = Math.max(0, photoCount);
+  if (count === 0) return [0, 1, 2];
+
+  const pool = Array.from({ length: count }, (_, idx) => idx);
+  let picked = [];
+
+  for (let attempt = 0; attempt < 50; attempt++) {
+    const shuffled = shuffleArray(pool);
+    picked = shuffled.slice(0, Math.min(neededCount, shuffled.length));
+    if (!hasSameMembers(picked, previousIndices) && !isConsecutiveSet(picked)) break;
+  }
+
+  if (isConsecutiveSet(picked)) {
+    picked = buildNonConsecutiveFallback(pool, neededCount);
+  }
+
+  while (picked.length < neededCount) {
+    picked.push(picked[picked.length % Math.max(1, picked.length)] || 0);
+  }
+
+  return picked;
+}
+
+function shuffleArray(items) {
+  const shuffled = items.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function randomInt(maxExclusive) {
+  if (window.crypto && window.crypto.getRandomValues) {
+    const randomValues = new Uint32Array(1);
+    window.crypto.getRandomValues(randomValues);
+    return randomValues[0] % maxExclusive;
+  }
+  return Math.floor(Math.random() * maxExclusive);
+}
+
+function hasSameMembers(a, b) {
+  if (!a || !b || a.length !== b.length) return false;
+  const sortedA = a.slice().sort((x, y) => x - y);
+  const sortedB = b.slice().sort((x, y) => x - y);
+  return sortedA.every((value, idx) => value === sortedB[idx]);
+}
+
+function isConsecutiveSet(indices) {
+  if (!indices || indices.length < 2) return false;
+  const sorted = indices.slice().sort((a, b) => a - b);
+  return sorted.every((value, idx) => idx === 0 || value === sorted[idx - 1] + 1);
+}
+
+function buildNonConsecutiveFallback(pool, neededCount) {
+  if (pool.length <= neededCount) return pool.slice(0, neededCount);
+
+  const shuffled = shuffleArray(pool);
+  const picked = [];
+
+  for (const value of shuffled) {
+    const candidate = picked.concat(value);
+    if (!isConsecutiveSet(candidate)) picked.push(value);
+    if (picked.length === neededCount) return picked;
+  }
+
+  return [pool[0], pool[Math.floor(pool.length / 2)], pool[pool.length - 1]].slice(0, neededCount);
+}
+
+function applyCoverPhotoIndices(coverImages, indices) {
+  coverImages.forEach((img, slot) => {
+    const index = indices[slot] ?? indices[0] ?? 0;
+    img.src = `${CONFIG.photos.thumbFolder}/${index}.jpg`;
+    img.alt = `首页随机展示的第 ${index + 1} 张回忆照片`;
+  });
 }
 
 function loadPhotos() {

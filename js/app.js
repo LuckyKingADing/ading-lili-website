@@ -118,9 +118,15 @@ function updateNowPlaying(index) {
   const text = document.getElementById("nowPlayingText");
   text.textContent = `${song.name} - ${song.artist}`;
   text.classList.remove("marquee");
-  // 强制回流后重新启用跑马灯
-  void text.offsetWidth;
-  text.classList.add("marquee");
+  text.style.removeProperty("--marquee-distance");
+
+  requestAnimationFrame(() => {
+    const overflow = text.scrollWidth - text.clientWidth;
+    if (overflow > 8) {
+      text.style.setProperty("--marquee-distance", `-${overflow + 16}px`);
+      text.classList.add("marquee");
+    }
+  });
 }
 
 function highlightActive(index) {
@@ -162,6 +168,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (input) {
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") handleLogin();
+    });
+  }
+
+  const popup = document.getElementById("popup");
+  if (popup) {
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) closePopup();
     });
   }
 });
@@ -328,12 +341,30 @@ function loadThumbnail(idx) {
 }
 
 function createImageElement(thumbImg, idx, resolve) {
+  const card = document.createElement("figure");
+  card.className = "gallery-card";
+  card.dataset.index = idx;
+  card.dataset.large = `${CONFIG.photos.folder}/${idx}.jpg`;
+  card.setAttribute("data-date", "");
+  card.setAttribute("role", "button");
+  card.tabIndex = 0;
+
   const el = document.createElement("img");
-  el.dataset.large = `${CONFIG.photos.folder}/${idx}.jpg`;
   el.src = thumbImg.src;
-  el.alt = `Photo ${idx}`;
+  el.alt = `我们的第 ${idx + 1} 张照片`;
+  el.loading = "lazy";
+  el.decoding = "async";
   el.dataset.index = idx;
+  el.dataset.large = card.dataset.large;
   el.setAttribute("data-date", "");
+
+  const caption = document.createElement("figcaption");
+  caption.className = "gallery-date";
+  caption.setAttribute("aria-hidden", "true");
+
+  card.appendChild(el);
+  card.appendChild(caption);
+  updatePhotoMetadata(card, el, caption, idx, "");
 
   // 读取 EXIF 拍摄时间
   if (typeof EXIF !== "undefined") {
@@ -344,18 +375,41 @@ function createImageElement(thumbImg, idx, resolve) {
       } else {
         exifDate = "";
       }
-      el.setAttribute("data-date", exifDate);
-      loadedImages[idx] = { src: el.dataset.large, date: exifDate };
+      updatePhotoMetadata(card, el, caption, idx, exifDate);
     });
-  } else {
-    loadedImages[idx] = { src: el.dataset.large, date: "" };
   }
 
-  el.addEventListener("click", () => {
-    showPopup(el.dataset.large, el.getAttribute("data-date"), idx);
+  const openPhoto = () => {
+    showPopup(card.dataset.large, card.getAttribute("data-date"), idx);
+  };
+
+  card.addEventListener("click", openPhoto);
+  card.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openPhoto();
+    }
   });
 
-  resolve(el);
+  resolve(card);
+}
+
+function updatePhotoMetadata(card, img, caption, idx, date) {
+  card.setAttribute("data-date", date);
+  img.setAttribute("data-date", date);
+
+  if (date) {
+    card.classList.add("has-date");
+    caption.textContent = date;
+    img.alt = `我们的第 ${idx + 1} 张照片，拍摄于 ${date}`;
+    card.setAttribute("aria-label", `查看第 ${idx + 1} 张照片，拍摄于 ${date}`);
+  } else {
+    card.classList.remove("has-date");
+    caption.textContent = "";
+    card.setAttribute("aria-label", `查看第 ${idx + 1} 张照片`);
+  }
+
+  loadedImages[idx] = { src: card.dataset.large, date };
 }
 
 // --- 滚动加载 ---
@@ -375,10 +429,15 @@ function showPopup(src, date, idx) {
   const popup = document.getElementById("popup");
   const popupImg = document.getElementById("popupImg");
   const imgDate = document.getElementById("imgDate");
+  const photoCounter = document.getElementById("photoCounter");
 
-  popup.style.display = "block";
+  popup.classList.add("is-open");
+  popup.setAttribute("aria-hidden", "false");
+  document.body.classList.add("viewer-open");
   popupImg.style.display = "none";
+  popupImg.removeAttribute("src");
   imgDate.textContent = "";
+  photoCounter.textContent = getPhotoCounterText(idx);
 
   const fullImg = new Image();
   fullImg.crossOrigin = "Anonymous";
@@ -386,30 +445,28 @@ function showPopup(src, date, idx) {
 
   fullImg.onload = () => {
     popupImg.src = src;
+    popupImg.alt = buildPhotoAlt(idx, date);
     popupImg.style.display = "block";
-    imgDate.textContent = date;
+    imgDate.textContent = date || "";
   };
 
   fullImg.onerror = () => {
-    imgDate.textContent = "加载失败";
+    popupImg.style.display = "none";
+    imgDate.textContent = "这张照片暂时加载失败";
   };
 
-  // 显示箭头
-  const leftArrow = document.getElementById("leftArrow");
-  const rightArrow = document.getElementById("rightArrow");
-  leftArrow.style.display = "flex";
-  rightArrow.style.display = "flex";
-
-  leftArrow.classList.toggle("disabled", currentImageIndex <= 0);
-  rightArrow.classList.toggle("disabled", !loadedImages[currentImageIndex + 1]);
+  updateViewerControls();
 }
 
 function closePopup() {
-  document.getElementById("popup").style.display = "none";
+  const popup = document.getElementById("popup");
+  popup.classList.remove("is-open");
+  popup.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("viewer-open");
   document.getElementById("popupImg").src = "";
   document.getElementById("imgDate").textContent = "";
-  document.getElementById("leftArrow").style.display = "none";
-  document.getElementById("rightArrow").style.display = "none";
+  document.getElementById("photoCounter").textContent = "";
+  updateViewerControls();
 }
 
 function showPreviousImage() {
@@ -426,10 +483,33 @@ function showNextImage() {
   }
 }
 
+function updateViewerControls() {
+  const leftArrow = document.getElementById("leftArrow");
+  const rightArrow = document.getElementById("rightArrow");
+  if (!leftArrow || !rightArrow) return;
+
+  leftArrow.disabled = currentImageIndex <= 0 || !loadedImages[currentImageIndex - 1];
+  rightArrow.disabled = !loadedImages[currentImageIndex + 1];
+}
+
+function getLoadedImageCount() {
+  return loadedImages.filter(Boolean).length;
+}
+
+function getPhotoCounterText(idx) {
+  const total = getLoadedImageCount();
+  if (!total) return `${idx + 1}`;
+  return `${idx + 1} / ${total}`;
+}
+
+function buildPhotoAlt(idx, date) {
+  return date ? `我们的第 ${idx + 1} 张照片，拍摄于 ${date}` : `我们的第 ${idx + 1} 张照片`;
+}
+
 // 键盘导航
 window.addEventListener("keydown", (e) => {
   const popup = document.getElementById("popup");
-  if (popup.style.display === "block") {
+  if (popup.classList.contains("is-open")) {
     if (e.key === "ArrowLeft") showPreviousImage();
     else if (e.key === "ArrowRight") showNextImage();
     else if (e.key === "Escape") closePopup();

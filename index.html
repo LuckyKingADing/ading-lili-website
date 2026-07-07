@@ -8,7 +8,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Our Love Journey</title>
-  <link rel="stylesheet" href="css/style.css?v=32">
+  <link rel="stylesheet" href="css/style.css?v=33">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&family=Noto+Sans+SC:wght@400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -38,34 +38,44 @@
     </nav>
 
     <main>
-      <!-- 名字区域 -->
-      <section id="nameSection">
-        <h2 id="coupleNames"></h2>
-      </section>
+      <!-- 首页封面 -->
+      <section id="coverSection">
+        <div class="cover-copy">
+          <p class="cover-eyebrow">Our Love Journey</p>
+          <section id="nameSection">
+            <h2 id="coupleNames"></h2>
+          </section>
 
-      <!-- 恋爱天数 -->
-      <section id="timerSection">
-        <audio id="bgm"></audio>
-        <div id="musicPlayer">
-          <div class="player-bar">
-            <button id="playBtn" class="player-btn play-icon" onclick="togglePlay()"></button>
-            <div class="now-playing">
-              <span id="nowPlayingText" class="marquee">选择一首歌吧</span>
+          <section id="timerSection">
+            <audio id="bgm"></audio>
+            <p>我们已经相爱了</p>
+            <h2><span id="loveDays">0</span> 天</h2>
+
+            <div id="musicPlayer">
+              <div class="player-bar">
+                <button id="playBtn" class="player-btn play-icon" onclick="togglePlay()" aria-label="播放或暂停音乐"></button>
+                <div class="now-playing">
+                  <span id="nowPlayingText" class="marquee">选择一首歌吧</span>
+                </div>
+                <button id="playlistToggle" class="player-btn" onclick="togglePlaylist()" aria-label="展开歌单">☰</button>
+              </div>
+              <div id="playlistPanel" class="playlist-panel"></div>
             </div>
-            <button id="playlistToggle" class="player-btn" onclick="togglePlaylist()">☰</button>
-          </div>
-          <div id="playlistPanel" class="playlist-panel"></div>
-        </div>
-        <p>我们已经相爱了</p>
-        <h2><span id="loveDays">0</span> 天</h2>
-      </section>
+          </section>
 
-      <!-- 今日情话（右上角纯文本） -->
-      <section id="quoteSection" style="display: none;">
-        <h3>今日情话 💕</h3>
-        <div id="dailyQuote">
-          <p id="quoteText" class="quote-text"></p>
-          <p id="quoteSource" class="quote-source"></p>
+          <section id="quoteSection" style="display: none;">
+            <h3>今日情话</h3>
+            <div id="dailyQuote">
+              <p id="quoteText" class="quote-text"></p>
+              <p id="quoteSource" class="quote-source"></p>
+            </div>
+          </section>
+        </div>
+
+        <div class="cover-photos" aria-label="我们的照片封面">
+          <img class="cover-photo cover-photo-main" src="images/thumbs/0.jpg" alt="Ading 和 Lili 的回忆照片">
+          <img class="cover-photo cover-photo-small cover-photo-top" src="images/thumbs/1.jpg" alt="我们的日常瞬间">
+          <img class="cover-photo cover-photo-small cover-photo-bottom" src="images/thumbs/2.jpg" alt="我们的纪念照片">
         </div>
       </section>
 
@@ -117,17 +127,22 @@
   </div>
 
   <!-- 图片弹窗 -->
-  <div id="popup">
-    <span id="closeBtn" onclick="closePopup()">&times;</span>
-    <p id="imgDate"></p>
-    <img id="popupImg" src="" alt="Photo">
+  <div id="popup" aria-hidden="true">
+    <button id="closeBtn" onclick="closePopup()" aria-label="关闭照片">&times;</button>
+    <button id="leftArrow" class="arrow" onclick="showPreviousImage()" aria-label="上一张照片">‹</button>
+    <div class="viewer-frame">
+      <img id="popupImg" src="" alt="Photo">
+      <div class="viewer-meta">
+        <p id="imgDate"></p>
+        <p id="photoCounter"></p>
+      </div>
+    </div>
+    <button id="rightArrow" class="arrow" onclick="showNextImage()" aria-label="下一张照片">›</button>
   </div>
-  <div id="leftArrow" class="arrow" onclick="showPreviousImage()">❮</div>
-  <div id="rightArrow" class="arrow" onclick="showNextImage()">❯</div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
   <script src="config.js?v=4"></script>
   <script src="js/hearts.js?v=1"></script>
-  <script src="js/app.js?v=11"></script>
+  <script src="js/app.js?v=12"></script>
 </body>
 </html>

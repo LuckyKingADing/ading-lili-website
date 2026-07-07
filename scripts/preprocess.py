@@ -35,7 +35,7 @@ try:
 except ImportError:
     pass
 
-THUMB_SIZE = (400, 400)
+THUMB_SIZE = (720, 720)
 SUPPORTED_FORMATS = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".bmp", ".gif"}
 
 
@@ -69,17 +69,11 @@ def collect_images(images_dir):
 
 
 def create_thumbnail(src_path, thumb_path):
-    """创建正方形缩略图：从图片中间裁剪"""
+    """创建等比缩略图，保留照片原始比例"""
     img = Image.open(src_path)
     img = ImageOps.exif_transpose(img)
     img = img.convert("RGB")
-    w, h = img.size
-    side = min(w, h)
-    # 计算居中裁剪区域
-    left = (w - side) // 2
-    top = (h - side) // 2
-    img = img.crop((left, top, left + side, top + side))
-    img = img.resize(THUMB_SIZE, Image.LANCZOS)
+    img.thumbnail(THUMB_SIZE, Image.LANCZOS)
     img.save(thumb_path, "JPEG", quality=85)
 
 
